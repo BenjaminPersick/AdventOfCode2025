@@ -17,9 +17,13 @@ func main() {
 	for i := 0; i < len(days); i++ {
 		currPair = days[i]
 
-		currPair.Init(readFileContent(fmt.Sprintf("./input/%d.txt", i+1)))
-		fmt.Printf("%s\n", currPair.PartOne())
-		fmt.Printf("%s\n", currPair.PartTwo())
+		dayNum := i + 1
+
+		currPair.Init(readFileContent(fmt.Sprintf("./input/%d.txt", dayNum)))
+
+		fmt.Printf("===================================[Day %d]===================================\n", dayNum)
+		fmt.Printf("Part 1: %s\n", currPair.PartOne())
+		fmt.Printf("Part 2: %s\n", currPair.PartTwo())
 	}
 }
 
