@@ -11,6 +11,7 @@ import (
 func main() {
 	days := []solution.SolutionPair{
 		&solution.Day1{},
+		&solution.Day2{},
 	}
 
 	var currPair solution.SolutionPair
