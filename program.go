@@ -16,11 +16,12 @@ func main() {
 		&solution.Day4{},
 	}
 
+	var dayNum int
 	var currPair solution.SolutionPair
-	for i := 0; i < len(days); i++ {
+	for i := range len(days) {
 		currPair = days[i]
 
-		dayNum := i + 1
+		dayNum = i + 1
 
 		currPair.Init(readFileContent(fmt.Sprintf("./input/%d.txt", dayNum)))
 
