@@ -5,3 +5,8 @@ type SolutionPair interface {
 	PartOne() string
 	PartTwo() string
 }
+
+type Range struct {
+	low  int
+	high int
+}

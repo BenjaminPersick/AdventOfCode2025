@@ -8,11 +8,6 @@ import (
 	"strings"
 )
 
-type Range struct {
-	low  int
-	high int
-}
-
 type Day2 struct {
 	ranges []Range
 }
