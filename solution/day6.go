@@ -101,11 +101,13 @@ func (d *Day6) Init(input string) {
 	}
 }
 
+// Returns the solution for part one of day 6.
 func (d Day6) PartOne() string {
 
 	return strconv.Itoa(SumColumnSolutions(d.columns))
 }
 
+// Returns the solution for part two of day 6.
 func (d Day6) PartTwo() string {
 	return strconv.Itoa(SumColumnSolutions(d.cephalopodColumns))
 }
