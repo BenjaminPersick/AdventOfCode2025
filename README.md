@@ -28,8 +28,8 @@ inputs for each day that I have worked on so far.
   - [x] Part 1
   - [x] Part 2
 - Day 7
-  - [ ] Part 1
-  - [ ] Part 2
+  - [x] Part 1
+  - [x] Part 2
 - Day 8
   - [ ] Part 1
   - [ ] Part 2
