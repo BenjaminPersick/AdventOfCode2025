@@ -130,7 +130,7 @@ func (d Day5) PartTwo() string {
 			// current range overlaps with two ranges in the mergedRanges array => merge all 3 together
 			lowerOverlappingRange.high = upperOverlappingRange.high
 
-			// delete upper range from mergedRange after the merge by overwriting it with the last element in the array and then curring off the last element
+			// delete upper range from mergedRange after the merge by overwriting it with the last element in the array and then cutting off the last element
 			mergedRanges[upperOverlappingRangeIndex], mergedRanges = mergedRanges[len(mergedRanges)-1], mergedRanges[:len(mergedRanges)-1]
 		} else if lowerOverlappingRange != nil {
 			// current range's lower end overlaps with a range in mergedRanges
