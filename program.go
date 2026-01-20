@@ -18,6 +18,7 @@ func main() {
 		&solution.Day6{},
 		&solution.Day7{},
 		&solution.Day8{},
+		&solution.Day9{},
 	}
 
 	var dayNum int
