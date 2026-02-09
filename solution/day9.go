@@ -175,38 +175,52 @@ func TileArea(corner1, corner2 Vec2) int {
 // Determines whether the rectangle with the corners specified by the given TilePair is inside the loop of red/green tiles
 func RectInsideLoop(rect TilePair) bool {
 	// get min and max bounds of rectangle
-	var minX, minY, maxX, maxY int
+	rectMinX, rectMaxX := MinMax(rect.start.x, rect.end.x)
+	rectMinY, rectMaxY := MinMax(rect.start.y, rect.end.y)
 
-	if rect.start.x > rect.end.x {
-		maxX = rect.start.x
-		minX = rect.end.x
-	} else {
-		maxX = rect.end.x
-		minX = rect.start.x
-	}
+	var currEdge TilePair
+	var edgeMinX, edgeMinY, edgeMaxX, edgeMaxY, i int
+	var currEdgeRange Range
 
-	if rect.start.y > rect.end.y {
-		maxY = rect.start.y
-		minY = rect.end.y
-	} else {
-		maxY = rect.end.y
-		minY = rect.start.y
-	}
+	// test all horizontal loop edges for collisions with rectangle
+	for yCoord, currEdges := range horizontalEdges {
+		for i = range len(currEdges) {
+			currEdge = currEdges[i]
 
-	// test horizontal edges of rectangle
-	var currX int
-	for currX = minX; currX <= maxX; currX++ {
-		if !(TileInsideLoop(Vec2{currX, minY}) && TileInsideLoop(Vec2{currX, maxY})) {
-			return false
+			edgeMinX, edgeMaxX = MinMax(currEdge.start.x, currEdge.end.x)
+			currEdgeRange = Range{edgeMinX, edgeMaxX}
+
+			rectHasLeftOrRightEdgeInRange := InRange(rectMinX+1, currEdgeRange) || InRange(rectMaxX-1, currEdgeRange)
+			edgeInRectYRange := InRange(yCoord, Range{rectMinY + 1, rectMaxY - 1})
+
+			if rectHasLeftOrRightEdgeInRange && edgeInRectYRange {
+				return false
+			}
 		}
 	}
 
 	// test vertical edges of rectangle
-	var currY int
-	for currY = minY + 1; currY <= maxY-1; currY++ {
-		if !(TileInsideLoop(Vec2{minX, currY}) && TileInsideLoop(Vec2{maxX, currY})) {
-			return false
+	for xCoord, currEdges := range verticalEdges {
+		for i = range len(currEdges) {
+			currEdge = currEdges[i]
+
+			edgeMinY, edgeMaxY = MinMax(currEdge.start.y, currEdge.end.y)
+			currEdgeRange = Range{edgeMinY, edgeMaxY}
+
+			rectHasTopOrBottomEdgeInRange := InRange(rectMinY+1, currEdgeRange) || InRange(rectMaxY-1, currEdgeRange)
+			edgeInRectXRange := InRange(xCoord, Range{rectMinX + 1, rectMaxX - 1})
+
+			if rectHasTopOrBottomEdgeInRange && edgeInRectXRange {
+				return false
+			}
 		}
+	}
+
+	// check if arbitrary point of rect is inside loop
+	avgRectX, avgRectY := (rectMinX+rectMaxX)/2, (rectMinY+rectMaxY)/2
+
+	if !TileInsideLoop(Vec2{avgRectX, avgRectY}) {
+		return false
 	}
 
 	return true
@@ -269,22 +283,10 @@ func TileOnEdge(tile Vec2, horizontal bool) bool {
 
 		if horizontal {
 			// horizontal edge -> test tile's x coordinate
-			if currEdge.start.x > currEdge.end.x {
-				upperBound = currEdge.start.x
-				lowerBound = currEdge.end.x
-			} else {
-				upperBound = currEdge.end.x
-				lowerBound = currEdge.start.x
-			}
+			lowerBound, upperBound = MinMax(currEdge.start.x, currEdge.end.x)
 		} else {
 			// vertical edge -> test tile's y coordinate
-			if currEdge.start.y > currEdge.end.y {
-				upperBound = currEdge.start.y
-				lowerBound = currEdge.end.y
-			} else {
-				upperBound = currEdge.end.y
-				lowerBound = currEdge.start.y
-			}
+			lowerBound, upperBound = MinMax(currEdge.start.y, currEdge.end.y)
 		}
 
 		if testCoord >= lowerBound && testCoord <= upperBound {
@@ -293,4 +295,13 @@ func TileOnEdge(tile Vec2, horizontal bool) bool {
 	}
 
 	return false
+}
+
+// Returns the minimum and maximum of the two given numbers in the format of (min, max).
+func MinMax(num1, num2 int) (int, int) {
+	if num1 > num2 {
+		return num2, num1
+	} else {
+		return num1, num2
+	}
 }
