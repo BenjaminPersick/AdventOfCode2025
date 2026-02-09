@@ -184,6 +184,12 @@ func RectInsideLoop(rect TilePair) bool {
 
 	// test all horizontal loop edges for collisions with rectangle
 	for yCoord, currEdges := range horizontalEdges {
+		edgeInRectYRange := InRange(yCoord, Range{rectMinY + 1, rectMaxY - 1})
+
+		if !edgeInRectYRange {
+			continue
+		}
+
 		for i = range len(currEdges) {
 			currEdge = currEdges[i]
 
@@ -191,9 +197,8 @@ func RectInsideLoop(rect TilePair) bool {
 			currEdgeRange = Range{edgeMinX, edgeMaxX}
 
 			rectHasLeftOrRightEdgeInRange := InRange(rectMinX+1, currEdgeRange) || InRange(rectMaxX-1, currEdgeRange)
-			edgeInRectYRange := InRange(yCoord, Range{rectMinY + 1, rectMaxY - 1})
 
-			if rectHasLeftOrRightEdgeInRange && edgeInRectYRange {
+			if rectHasLeftOrRightEdgeInRange {
 				return false
 			}
 		}
@@ -201,6 +206,12 @@ func RectInsideLoop(rect TilePair) bool {
 
 	// test vertical edges of rectangle
 	for xCoord, currEdges := range verticalEdges {
+		edgeInRectXRange := InRange(xCoord, Range{rectMinX + 1, rectMaxX - 1})
+
+		if !edgeInRectXRange {
+			continue
+		}
+
 		for i = range len(currEdges) {
 			currEdge = currEdges[i]
 
@@ -208,9 +219,8 @@ func RectInsideLoop(rect TilePair) bool {
 			currEdgeRange = Range{edgeMinY, edgeMaxY}
 
 			rectHasTopOrBottomEdgeInRange := InRange(rectMinY+1, currEdgeRange) || InRange(rectMaxY-1, currEdgeRange)
-			edgeInRectXRange := InRange(xCoord, Range{rectMinX + 1, rectMaxX - 1})
 
-			if rectHasTopOrBottomEdgeInRange && edgeInRectXRange {
+			if rectHasTopOrBottomEdgeInRange {
 				return false
 			}
 		}
@@ -242,9 +252,22 @@ func TileInsideLoop(tile Vec2) bool {
 
 	// count the number of vertical edges encountered between tile and minimum edge of relevant tile range
 	edgesEncountered := 0
-	for i := tile.x - 1; i >= minX; i-- {
-		if TileOnEdge(Vec2{i, tile.y}, false) {
-			edgesEncountered++
+
+	var currEdge TilePair
+	var edgeMinY, edgeMaxY int
+
+	for xCoord, currEdges := range verticalEdges {
+		if !InRange(xCoord, Range{minX, tile.x}) {
+			continue
+		}
+
+		for i := range len(currEdges) {
+			currEdge = currEdges[i]
+			edgeMinY, edgeMaxY = MinMax(currEdge.start.y, currEdge.end.y)
+
+			if InRange(tile.y, Range{edgeMinY, edgeMaxY}) {
+				edgesEncountered++
+			}
 		}
 	}
 
